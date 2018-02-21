@@ -9,7 +9,7 @@ Simply run in your prefered terminal or command line:
 
 and you should have an output.csv files with the result in the current directory. Tested on Linux, Windows 10 and macOS. The script needs a proper *tq.rep* file in the current directory, as input.
 
-## Version 0.1 (Tarsus IV) - initial release
+## Version 0.1 (Tarsus IV) - initial release (21.02.2018)
 *Functional, but limited*
 
 This is more like a proof-of-concept. The script reads the *.rep* file and outputs a (proper) CSV file, with all the samples ordered in columns, with element concentration on each line. Only works for (my) TotalQuant report files, but support for quantitative reports is planned in future versions.
