@@ -22,6 +22,10 @@ elements = ["", "Li", "Be", "B", "C", "N", "O", "F", "Ne", "Na", "Mg", "Al",
                 "Ho", "Er", "Tm", "Yb", "Lu", "Hf", "Ta", "W", "Re", "Os",
                 "Ir", "Pt", "Au", "Hg", "Tl", "Pb", "Bi", "Th", "U"]
 
+# All the chemical elements present in the output file;
+# There's a placeholder in the first position,
+# to match the elements list on the fist column;
+
 isotopes = ["Li,7", "Be,9", "B,11", "C,12", "N,14", "O,16", "F,19", "Ne,20",
             "Na,23", "Mg,24", "Al,27", "Si,28", "P,31", "S,32", "Cl,35",
             "K,39", "Ar,40", "Ca,40", "Sc,45", "Ti,48", "V,51", "Cr,52",
@@ -37,9 +41,8 @@ isotopes = ["Li,7", "Be,9", "B,11", "C,12", "N,14", "O,16", "F,19", "Ne,20",
             "Ir,192", "Pt,195", "Au,197", "Hg,201", "Tl,204", "Pb,207",
             "Pb,208", "Bi,209", "Th,232", "U,238", "AsO,91"]
 
-# All the chemical elements present in the output file;
-# There's a placeholder in the first position,
-# to match the elements list on the fist column;
+# Isotopes list must have more elements (TO-DO).
+# Used for matching search items in Quantitative mode.
 
 # Finding the .rep file in current directory;
 asps = []
