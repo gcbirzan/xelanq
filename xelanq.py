@@ -13,18 +13,19 @@ weekdays = ["Monday", "Tuesday", "Wednesday", "Thursday",
             "Friday", "Saturday", "Sunday"]
 # Weekdays are used as anchor, for guiding our search withint the file;
 
-elements = ["", "Li", "Be", "B", "C", "N", "O", "F", "Ne", "Na", "Mg", "Al",
-                "Si", "P", "S", "Cl", "Ar", "K", "Ca", "Sc", "Ti", "V", "Cr",
-                "Mn", "Fe", "Co", "Ni", "Cu", "Zn", "Ga", "Ge", "As", "Se",
-                "Br", "Kr", "Rb", "Sr", "Y", "Zr", "Nb", "Mo", "Ru", "Rh",
-                "Pd", "Ag", "Cd", "In", "Sn", "Sb", "Te", "I", "Xe", "Cs",
-                "Ba", "La", "Ce", "Pr", "Nd", "Sm", "Eu", "Gd", "Tb", "Dy",
-                "Ho", "Er", "Tm", "Yb", "Lu", "Hf", "Ta", "W", "Re", "Os",
-                "Ir", "Pt", "Au", "Hg", "Tl", "Pb", "Bi", "Th", "U"]
+elements = ["", "", "Li", "Be", "B", "C", "N", "O", "F", "Ne", "Na", "Mg",
+                "Al", "Si", "P", "S", "Cl", "Ar", "K", "Ca", "Sc", "Ti", "V",
+                "Cr", "Mn", "Fe", "Co", "Ni", "Cu", "Zn", "Ga", "Ge", "As",
+                "Se", "Br", "Kr", "Rb", "Sr", "Y", "Zr", "Nb", "Mo", "Ru",
+                "Rh", "Pd", "Ag", "Cd", "In", "Sn", "Sb", "Te", "I", "Xe",
+                "Cs", "Ba", "La", "Ce", "Pr", "Nd", "Sm", "Eu", "Gd", "Tb",
+                "Dy", "Ho", "Er", "Tm", "Yb", "Lu", "Hf", "Ta", "W", "Re",
+                "Os", "Ir", "Pt", "Au", "Hg", "Tl", "Pb", "Bi", "Th", "U"]
 
 # All the chemical elements present in the output file;
-# There's a placeholder in the first position,
-# to match the elements list on the fist column;
+# There's two placeholders: in the first position,
+# for matching the elements list on the fist column;
+# and in the second position for analysis date
 
 isotopes = ["Li,7", "Be,9", "B,11", "C,12", "N,14", "O,16", "F,19", "Ne,20",
             "Na,23", "Mg,24", "Al,27", "Si,28", "P,31", "S,32", "Cl,35",
@@ -46,15 +47,16 @@ isotopes = ["Li,7", "Be,9", "B,11", "C,12", "N,14", "O,16", "F,19", "Ne,20",
 
 # Finding the .rep file in current directory;
 asps = []
+asps.append("EXIT")
 for root, dirs, files in os.walk('./'):
     for file in files:
         if file.endswith('.rep'):
             asps.append(file)
-for i in range(1, len(asps)):
+for i in range(0, len(asps)):
     print i, ":", asps[i]
-print "0 : Exit"
+print len(asps), "file detected"
 xx = input('Which file? ')
-if (xx == 0) or (xx not in range(1, len(asps))):
+if (xx == 0) or (xx not in range(0, len(asps))):
     sys.exit()
 
 repfilename = str(asps[int(xx)])
@@ -136,11 +138,12 @@ def TotalQuantGO():
            (weekdays[4] in content[i]) or (weekdays[5] in content[i]) or \
            (weekdays[6] in content[i]):
             sample[c_sample][0] = content[i-1]
+            sample[c_sample][1] = content[i].split(',', 1)[1]
             # the index 0 will hold the sample code,
             # the concentration follows from index 1 onwards;
 
-            for j in range(1, len(elements)):
-                temp_sample = content[i+gap1+j-1].split(',')[1].rstrip()
+            for j in range(2, len(elements)):
+                temp_sample = content[i+gap1+j-2].split(',')[1].rstrip()
                 try:
                     temp_value = float(temp_sample)
                     if (temp_value < 100):
@@ -160,7 +163,7 @@ def TotalQuantGO():
 
     # Writing the output file;
     file = open(csvfilename, "w")
-    for j in range(0, 82):
+    for j in range(0, len(elements)):
         if (elements[j] in el_exception):
             continue
         # Skipping the elements that make no sense;
@@ -192,22 +195,27 @@ def QuantitativeGO():
            (weekdays[6] in content[i]):
             c_sample = c_sample+1
 
-    w, h = 82, c_sample
+    # w, h = len(isotopes), c_sample
+    w, h = 10000, 10000
+    s_index = 0
     sample = [[0 for x in range(w)] for y in range(h)]
-
     for i in range(0, len(content)):
         if (weekdays[0] in content[i]) or (weekdays[1] in content[i]) or \
            (weekdays[2] in content[i]) or (weekdays[3] in content[i]) or \
            (weekdays[4] in content[i]) or (weekdays[5] in content[i]) or \
            (weekdays[6] in content[i]):
-            print content[i-1]
+            sample[s_index][0] = content[i-1]
+            sample[s_index][1] = content[i]
+            b = 3
+            s_index = s_index + 1
         for j in range(0, len(isotopes)):
-            if (isotopes[j] in content[i]) and (content[i].endswith("ppb")):
-                    print (content[i].split(',')[1].rstrip()),
-                    (content[i].split(',')[-4].rstrip())
+            if ((isotopes[j] in content[i]) and (content[i].endswith("ppb"))):
+                    sample[s_index-1][b] = content[i].split(',')[1].rstrip(), \
+                        content[i].split(',')[-4].rstrip()
+                    sample[s_index-1][2] = b - 2
+                    b = b + 1
 
     print "Processed", c_sample, "samples in", len(content), "lines."
-    print sample[0, 0]
 
     # Multiple groups (batch), based on number of elements determined
     # user will select which group to process.
@@ -223,3 +231,4 @@ print "All done!"
 # Changelog:
 # - switched to Python 2, for compatibility with Windows XP;
 # - Cleaned the code, PEP8 compliant;
+# - Added date of analysis in sample concentration list
