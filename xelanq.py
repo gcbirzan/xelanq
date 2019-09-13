@@ -115,9 +115,8 @@ def parse_and_save():
         sys.exit()
 
     repfilename = str(files[int(file_idx)])
-    # .rep file that will be processed;
 
-    csvfilename = repfilename.split('.')[0].rstrip() + "2.csv"
+    csvfilename = repfilename.split('.')[0].rstrip() + ".csv"
     data, _, headers = parse(repfilename)
     save(data, headers, csvfilename)
 
