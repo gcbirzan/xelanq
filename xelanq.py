@@ -1,7 +1,9 @@
 from __future__ import print_function
+from __future__ import unicode_literals
 
 import csv
 import glob
+import os
 from collections import defaultdict
 
 """XElanQ v0.1a."""
@@ -84,15 +86,26 @@ def save(data, headers, csvfilename):
     headers = list(headers)
     with open(csvfilename, "w") as f:
         writer = csv.writer(f)
-        writer.writerow(h[0] for h in [('Element', '')] + headers)
-        writer.writerow(h[1] for h in [('Element', '')] + headers)
+        writer.writerow([h[0] for h in [('Element', '')] + headers])
+        writer.writerow([h[1] for h in [('Element', '')] + headers])
         for element, values in data.items():
             writer.writerow([element] + [values[header] for header in headers])
 
 
+def get_files():
+    if sys.version_info[0] == 2:
+        files = []
+        for root, dirs, files_walk in os.walk('./'):
+            for f in files_walk:
+                if f.endswith('.rep'):
+                    files.append(f)
+    else:
+        files = glob.glob("**/*.rep", recursive=True)
+    return files
+
 
 def parse_and_save():
-    files = glob.glob("**/*.rep", recursive=True)
+    files = get_files()
     files.insert(0, "EXIT")
     for i in range(0, len(files)):
         print(i, ":", files[i])
@@ -110,7 +123,7 @@ def parse_and_save():
 
 
 def find(code_to_find):
-    files = glob.glob("**/*.rep", recursive=True)
+    files = get_files()
     for file in files:
         found = False
         data, file_type, headers = parse(file)
@@ -123,6 +136,7 @@ def find(code_to_find):
         if found:
             for element, values in data.items():
                 print(element, values.get(code_date, 'Not found'))
+
 
 if __name__ == '__main__':
     if len(sys.argv) == 1:
